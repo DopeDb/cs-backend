@@ -1,7 +1,6 @@
 using DopeDb.Shared.Cli;
 using DopeDb.Shared.Util;
 using DopeDb.Shared.Reflection;
-using DopeDb.Shared.Types;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -60,7 +59,6 @@ namespace DopeDb.Cli {
         {
             var result = new List<object>();
             var consumedParameters = 0;
-            var propertyMapper = new PropertyMapper();
             foreach (var parameter in actionInfo.GetParameters())
             {
                 var targetName = parameter.Name;
