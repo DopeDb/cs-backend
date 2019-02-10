@@ -4,6 +4,7 @@ using DopeDb.Shared.Reflection;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace DopeDb.Cli {
@@ -83,8 +84,8 @@ namespace DopeDb.Cli {
                 }
                 if (targetValue == null)
                 {
-                    // TODO: map properties
-                    targetValue = argumentString.Length > 0 ? argumentString[0].ToString() : string.Empty;
+                    var typeConverter = TypeDescriptor.GetConverter(parameter.ParameterType);
+                    targetValue = typeConverter.ConvertTo(argumentString[0], parameter.ParameterType);
                 }
                 result.Add(targetValue);
             }
