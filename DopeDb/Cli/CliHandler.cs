@@ -1,14 +1,16 @@
 using DopeDb.Shared.Cli;
-using DopeDb.Shared.Util;
 using DopeDb.Shared.Reflection;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.ComponentModel;
+using DopeDb.Shared.Util;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
-namespace DopeDb.Cli {
-    class CliHandler {
+namespace DopeDb.Cli
+{
+    class CliHandler
+    {
         public void HandleCliCommand(string[] args)
         {
             if (args.Length < 1)
@@ -16,7 +18,8 @@ namespace DopeDb.Cli {
                 System.Console.WriteLine("No arguments given");
                 System.Environment.Exit(1);
             }
-            try {
+            try
+            {
                 var cliCall = ParseCliCall(args);
                 InvokeCliCall(cliCall);
             }
@@ -68,11 +71,10 @@ namespace DopeDb.Cli {
                 if (cliCall.HasArgument(targetName))
                 {
                     argumentString = cliCall.GetArgument(targetName);
-                    System.Console.WriteLine(argumentString);
                 }
                 else if (cliCall.HasArgument(consumedParameters))
                 {
-                    argumentString = new object[1]{ cliCall.GetArgument(consumedParameters++) };
+                    argumentString = new object[1] { cliCall.GetArgument(consumedParameters++) };
                 }
                 else if (parameter.IsOptional && parameter.HasDefaultValue)
                 {
@@ -105,7 +107,7 @@ namespace DopeDb.Cli {
             var namedArguments = new Dictionary<string, List<string>>();
             var positionalArguments = new List<string>();
             string currentArgument = null;
-            void addArgument (string n, string v)
+            void addArgument(string n, string v)
             {
                 if (!namedArguments.ContainsKey(n))
                 {
@@ -141,7 +143,8 @@ namespace DopeDb.Cli {
                     {
                         positionalArguments.Add(arg);
                     }
-                    else {
+                    else
+                    {
                         addArgument(currentArgument, arg);
                         currentArgument = null;
                     }
