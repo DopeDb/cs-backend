@@ -4,8 +4,10 @@ using System.Reflection;
 using System.Text;
 using DopeDb.Shared.Cli;
 
-namespace DopeDb.Cli {
-    class HelpCliController : AbstractCliController {
+namespace DopeDb.Cli
+{
+    class HelpCliController : AbstractCliController
+    {
 
         [Description("Lists all available commands")]
         public void ListCommand()
@@ -17,7 +19,8 @@ namespace DopeDb.Cli {
                 string commandName = cmd.Key;
                 MethodInfo action = cmd.Value;
                 var commandController = action.DeclaringType;
-                if (previousCommandController != commandController) {
+                if (previousCommandController != commandController)
+                {
                     previousCommandController = commandController;
                     Util.WriteLine($"\n<fg=Yellow>{commandController.Name}</>");
                     Util.WriteLine("<fg=DarkGreen>==========================================================</>");
@@ -58,7 +61,7 @@ namespace DopeDb.Cli {
             }
             Util.WriteLine(usageStringBuilder.ToString(), 2);
             Util.WriteLine();
-            
+
             var helpText = getHelpText(command);
             if (!string.IsNullOrEmpty(helpText))
             {
@@ -123,15 +126,6 @@ namespace DopeDb.Cli {
                 helpText = this.getDescription(action);
             }
             return helpText;
-        }
-
-        [Parameter("firstArg", Description="Nothing meaningful")]        
-        public void TestCommand(string firstArg, int opt1 = 5, bool someFlag = false, string otherString = "foo")
-        {
-            Console.WriteLine(firstArg);
-            Console.WriteLine(opt1);
-            Console.WriteLine(someFlag);
-            Console.WriteLine(otherString);
         }
     }
 }

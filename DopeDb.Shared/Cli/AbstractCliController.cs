@@ -1,4 +1,5 @@
-namespace DopeDb.Shared.Cli {
+namespace DopeDb.Shared.Cli
+{
 
     public abstract class AbstractCliController
     {

@@ -186,6 +186,10 @@ namespace DopeDb.Shared.Cli
             {
                 WriteLine($" <fg=DarkMagenta>{obj}</>");
             }
+            else if (obj is Enum)
+            {
+                WriteLine($" <fg=Yellow>{obj.GetType()}.</><fg=DarkMagenta>{obj.ToString()}</>");
+            }
             else if (obj.GetType().IsGenericType && obj.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 WriteLine($" <fg=Yellow>{obj.GetType()}</>");
