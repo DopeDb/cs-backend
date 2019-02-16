@@ -1,0 +1,19 @@
+"DopeDb-CreateModel":
+  uriPattern: /create/{model}
+  controllerName: Model
+  controllerAction: Create
+
+"DopeDb-EditModel":
+  uriPattern: /edit/{model}/{id}
+  controllerName: Model
+  controllerAction: Create
+
+"DopeDb-ListModels":
+  uriPattern: /list/{model}
+  controllerName: Model
+  controllerAction: List
+
+"DopeDb-CsvExport":
+  uriPattern: /export/{model}.csv
+  controllerName: Csv
+  controllerAction: List
