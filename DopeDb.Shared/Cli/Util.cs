@@ -167,78 +167,84 @@ namespace DopeDb.Shared.Cli
 
         protected static void printObject(object obj, int depth = 0)
         {
-            var indentationWidth = 2;
-            var maxDepth = 3;
-            if (obj == null)
-            {
-                WriteLine(" <fg=Blue>null</>");
-            }
-            else if (obj is bool)
-            {
-                var lbl = (bool)obj ? "true" : "false";
-                WriteLine($" <fg=Blue>{lbl}</>");
-            }
-            else if (obj is string)
-            {
-                WriteLine($" <fg=DarkYellow>\"{obj}\" ({((string)obj).Length})</>");
-            }
-            else if (obj is int || obj is double)
-            {
-                WriteLine($" <fg=DarkMagenta>{obj}</>");
-            }
-            else if (obj is Enum)
-            {
-                WriteLine($" <fg=Yellow>{obj.GetType()}.</><fg=DarkMagenta>{obj.ToString()}</>");
-            }
-            else if (obj.GetType().IsGenericType && obj.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
-            {
-                WriteLine($" <fg=Yellow>{obj.GetType()}</>");
-                foreach (var x in (dynamic)obj)
+            try {
+                var indentationWidth = 2;
+                var maxDepth = 3;
+                if (obj == null)
                 {
-                    var item = (dynamic)x;
-                    Write($"{item.Key} =>", (depth + 1) * indentationWidth);
-                    printObject(item.Value, depth + 2);
+                    WriteLine(" <fg=Blue>null</>");
                 }
-            }
-            else if (obj is IEnumerable<object>)
-            {
-                WriteLine($" <fg=Yellow>{obj.GetType()}</>");
-                var n = 0;
-                foreach (var x in (IEnumerable<object>)obj)
+                else if (obj is bool)
                 {
-                    Write($"{n++} =>", (depth + 1) * indentationWidth);
-                    printObject(x, depth + 2);
+                    var lbl = (bool)obj ? "true" : "false";
+                    WriteLine($" <fg=Blue>{lbl}</>");
                 }
-            }
-            else if (obj.GetType().IsClass)
-            {
-                WriteLine($" <fg=Yellow>{obj.GetType()}</>");
-                if (depth < maxDepth)
+                else if (obj is string)
                 {
-                    foreach (var property in obj.GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance))
+                    WriteLine($" <fg=DarkYellow>\"{obj}\" ({((string)obj).Length})</>");
+                }
+                else if (obj is int || obj is double)
+                {
+                    WriteLine($" <fg=DarkMagenta>{obj}</>");
+                }
+                else if (obj is Enum)
+                {
+                    WriteLine($" <fg=Yellow>{obj.GetType()}.</><fg=DarkMagenta>{obj.ToString()}</>");
+                }
+                else if (obj.GetType().IsGenericType && obj.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                    foreach (var x in (dynamic)obj)
                     {
-                        Write($"{property.Name}:", (depth + 1) * indentationWidth);
-                        printObject(property.GetValue(obj), depth + 1);
-                    }
-                    foreach (var member in obj.GetType().GetMembers(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance))
-                    {
-                        if (member.MemberType != MemberTypes.Field && member.MemberType != MemberTypes.Property)
-                            continue;
-                        Write($"{member.Name}:", (depth + 1) * indentationWidth);
-                        if (member is FieldInfo)
-                        {
-                            printObject(((FieldInfo)member).GetValue(obj), depth + 1);
-                        }
-                        else
-                        {
-                            WriteLine($" <fg=Yellow>{obj.GetType()}</>");
-                        }
+                        var item = (dynamic)x;
+                        Write($"{item.Key} =>", (depth + 1) * indentationWidth);
+                        printObject(item.Value, depth + 2);
                     }
                 }
+                else if (obj is IEnumerable<object>)
+                {
+                    WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                    var n = 0;
+                    foreach (var x in (IEnumerable<object>)obj)
+                    {
+                        Write($"{n++} =>", (depth + 1) * indentationWidth);
+                        printObject(x, depth + 2);
+                    }
+                }
+                else if (obj.GetType().IsClass)
+                {
+                    WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                    if (depth < maxDepth)
+                    {
+                        foreach (var property in obj.GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance))
+                        {
+                            Write($"{property.Name}:", (depth + 1) * indentationWidth);
+                            printObject(property.GetValue(obj), depth + 1);
+                        }
+                        foreach (var member in obj.GetType().GetMembers(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance))
+                        {
+                            if (member.MemberType != MemberTypes.Field && member.MemberType != MemberTypes.Property)
+                                continue;
+                            Write($"{member.Name}:", (depth + 1) * indentationWidth);
+                            if (member is FieldInfo)
+                            {
+                                printObject(((FieldInfo)member).GetValue(obj), depth + 1);
+                            }
+                            else
+                            {
+                                WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                }
             }
-            else
+            catch (System.Exception)
             {
-                WriteLine($" <fg=Yellow>{obj.GetType()}</>");
+                WriteLine(" <fg=Red>!!!</>");
             }
         }
 
