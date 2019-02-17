@@ -69,6 +69,20 @@ namespace DopeDb.Shared.Configuration
                     }
                 }
             }
+            var configDir = new DirectoryInfo(Shared.Util.Path.ConfigDir());
+            if (configDir.Exists)
+            {
+                foreach (FileInfo file in configDir.GetFiles()) {
+                    var matches = resourceNameRegex.Matches(file.Name);
+                    if (matches.Count == 0)
+                    {
+                        continue;
+                    }
+                    var configTypeName = matches[0].Groups[1].Value;
+                    Enum.TryParse(configTypeName, out ConfigurationType configType);
+                    configurations[configType].AddYamlFile(file.FullName, true, false);
+                }
+            }
             foreach (var kv in configurations)
             {
                 this.configurations.Add(kv.Key, kv.Value.Build());
