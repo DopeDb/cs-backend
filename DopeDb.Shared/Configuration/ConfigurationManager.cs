@@ -17,6 +17,7 @@ namespace DopeDb.Shared.Configuration
     {
         Settings,
         Routes,
+        Model,
     }
     public class ConfigurationManager
     {
@@ -39,7 +40,7 @@ namespace DopeDb.Shared.Configuration
                 configurations.Add(configType, new ConfigurationBuilder());
             }
             var configTypes = String.Join("|", Enum.GetNames(typeof(ConfigurationType)));
-            var resourceNameRegex = new Regex($@"({configTypes})\.(.\.)*ya?ml");
+            var resourceNameRegex = new Regex($@"({configTypes})\.(.+\.)*ya?ml");
             foreach (var plugin in this.pluginManager.GetAllPlugins())
             {
                 if (!this.pluginManager.IsActive(plugin))
