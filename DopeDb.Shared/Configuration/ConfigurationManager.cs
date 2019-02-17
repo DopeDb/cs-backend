@@ -90,13 +90,8 @@ namespace DopeDb.Shared.Configuration
             }
         }
 
-        public IConfiguration GetConfiguration(ConfigurationType configurationType, IEnumerable<string> path)
+        public static IConfiguration GetConfigurationByPath(IConfiguration configuration, IEnumerable<string> path)
         {
-            if (this.configurations == null || !this.configurations.ContainsKey(configurationType))
-            {
-                throw new ArgumentOutOfRangeException("No configuration found for this configuration type");
-            }
-            var configuration = this.configurations[configurationType];
             if (path.Count() == 0)
             {
                 return configuration;
@@ -124,6 +119,21 @@ namespace DopeDb.Shared.Configuration
             return configuration;
         }
 
+        public static IConfiguration GetConfigurationByPath(IConfiguration configuration, string path = "")
+        {
+            return GetConfigurationByPath(configuration, path.Length > 0 ? path.Split('.') : new string[] { });
+        }
+
+        public IConfiguration GetConfiguration(ConfigurationType configurationType, IEnumerable<string> path)
+        {
+            if (this.configurations == null || !this.configurations.ContainsKey(configurationType))
+            {
+                throw new ArgumentOutOfRangeException("No configuration found for this configuration type");
+            }
+            var configuration = this.configurations[configurationType];
+            return GetConfigurationByPath(configuration, path);
+        }
+
         public IConfiguration GetConfiguration(ConfigurationType configurationType, string path = "")
         {
             return GetConfiguration(configurationType, path.Length > 0 ? path.Split('.') : new string[] { });
@@ -134,6 +144,19 @@ namespace DopeDb.Shared.Configuration
             var pathParts = path.Split('.');
             var lastKey = pathParts[pathParts.Length - 1];
             var config = this.GetConfiguration(configurationType, pathParts.SkipLast(1));
+            if (config == null)
+            {
+                return null;
+            }
+            var section = config.GetSection(lastKey);
+            return section.Value;
+        }
+
+        public static object GetConfigurationValueByPath(IConfiguration configuration, string path)
+        {
+            var pathParts = path.Split('.');
+            var lastKey = pathParts[pathParts.Length - 1];
+            var config = GetConfigurationByPath(configuration, pathParts.SkipLast(1));
             if (config == null)
             {
                 return null;
