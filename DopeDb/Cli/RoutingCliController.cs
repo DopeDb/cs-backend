@@ -17,9 +17,9 @@ namespace DopeDb.Cli
             this.routeResolver = new RouteResolver(configurationManager);
         }
 
-        public void ResolveCommand(string uri)
+        public void ResolveCommand(string uri, string method = "GET")
         {
-            Util.WriteLine(routeResolver.ResolveRoute(uri));
+            Util.WriteLine(routeResolver.ResolveRoute(uri, method.ToUpper()));
         }
 
         public void ListCommand()

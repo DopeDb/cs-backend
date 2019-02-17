@@ -22,34 +22,39 @@ namespace DopeDb.Http
         {
             try
             {
-                var route = routeResolver.ResolveRoute(request.Url.ToString(), request.HttpMethod);
+                var route = routeResolver.ResolveRoute(request.Url.AbsolutePath, request.HttpMethod);
+                this.DispatchRequest(route, request, response);
             }
             catch (RoutingException e)
             {
                 response.StatusCode = 500;
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(e.Message);
-                response.ContentLength64 = buffer.Length;
-                System.IO.Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
-                output.Close();
+                WriteToResponse(response, e.Message);
             }
             return response;
         }
 
-        protected void dispatchRequest(Route route, HttpListenerRequest request, HttpListenerResponse response)
+        protected void DispatchRequest(Route route, HttpListenerRequest request, HttpListenerResponse response)
         {
             try
             {
                 var controllerType = Type.GetType(route.ControllerName);
-                var actionMethodInfo = controllerType.GetMethod(route.ControllerAction + "Action", BindingFlags.Public);
+                if (controllerType == null)
+                {
+                    throw new RoutingException($"Unknown controller class {route.ControllerName}");
+                }
+                var actionMethodInfo = controllerType.GetMethod(route.ControllerAction + "Action");
                 if (actionMethodInfo == null)
                 {
                     throw new RoutingException($"The controller {route.ControllerName} does not have the action {route.ControllerAction}Action.");
                 }
                 var httpRequest = new HttpRequest(request);
-                var mappedArguments = mapArguments(actionMethodInfo, httpRequest);
+                var mappedArguments = MapArguments(actionMethodInfo, httpRequest);
                 var controller = Activator.CreateInstance(controllerType);
-                actionMethodInfo.Invoke(controller, mappedArguments);
+                var actionResult = actionMethodInfo.Invoke(controller, mappedArguments);
+                if (actionResult != null)
+                {
+                    WriteToResponse(response, actionResult.ToString());
+                }
             }
             catch (TypeLoadException e)
             {
@@ -57,7 +62,16 @@ namespace DopeDb.Http
             }
         }
 
-        protected object[] mapArguments(MethodInfo action, HttpRequest request)
+        protected void WriteToResponse(HttpListenerResponse response, string message)
+        {
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(message);
+            response.ContentLength64 = buffer.Length;
+            System.IO.Stream output = response.OutputStream;
+            output.Write(buffer, 0, buffer.Length);
+            output.Close();
+        }
+
+        protected object[] MapArguments(MethodInfo action, HttpRequest request)
         {
             var result = new List<object>();
             foreach (var parameter in action.GetParameters())

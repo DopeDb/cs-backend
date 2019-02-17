@@ -8,6 +8,11 @@ namespace DopeDb.Shared.Caching.Frontend
         {
         }
 
+        new public string Get(string key)
+        {
+            return this.backend.Get(key).ToString();
+        }
+
         public void Set(string key, string value)
         {
             this.backend.Set(key, value);

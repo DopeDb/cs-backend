@@ -14,6 +14,8 @@ namespace DopeDb.Shared.Mvc.Routing
 
         public string ControllerAction;
 
+        public string Method;
+
         public Dictionary<string, object> ControllerOptions = new Dictionary<string, object>();
 
         protected Dictionary<string, string> nodePartMappers = new Dictionary<string, string>();

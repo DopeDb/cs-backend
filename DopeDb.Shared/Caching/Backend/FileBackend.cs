@@ -16,6 +16,11 @@ namespace DopeDb.Shared.Caching.Backend
 
         protected int timeToLive;
 
+        public FileBackend(string identifier, int nestingDepth = 1, int timeToLive = 0)
+        : this(identifier, Shared.Util.Path.CacheDir(), nestingDepth, timeToLive)
+        {
+        }
+
         public FileBackend(string identifier, string baseDir, int nestingDepth = 1, int timeToLive = 0)
         {
             if (Regex.IsMatch(identifier, @"[^a-zA-Z0-9._-]"))
@@ -52,7 +57,7 @@ namespace DopeDb.Shared.Caching.Backend
         public void Set(string key, string value)
         {
             var path = GetFileName(key);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
             File.WriteAllText(path, value);
         }
 
@@ -60,15 +65,15 @@ namespace DopeDb.Shared.Caching.Backend
         {
             var sBuilder = new StringBuilder();
             sBuilder.Append(this.baseDir);
-            sBuilder.Append(Path.DirectorySeparatorChar);
+            sBuilder.Append(System.IO.Path.DirectorySeparatorChar);
             sBuilder.Append(this.identifier);
-            sBuilder.Append(Path.DirectorySeparatorChar);
+            sBuilder.Append(System.IO.Path.DirectorySeparatorChar);
             var nameHash = Algorithm.GetMd5(key);
             string[] nameParts = new string[this.nestingDepth + 1];
             for (int i = 0; i < this.nestingDepth; i++)
             {
                 sBuilder.Append(nameHash[i]);
-                sBuilder.Append(Path.DirectorySeparatorChar);
+                sBuilder.Append(System.IO.Path.DirectorySeparatorChar);
             }
             sBuilder.Append(nameHash.Substring(this.nestingDepth));
             return sBuilder.ToString();

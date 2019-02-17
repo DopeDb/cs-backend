@@ -1,19 +1,25 @@
 "DopeDb-CreateModel":
   uriPattern: /create/{model}
-  controllerName: Model
+  controllerName: DopeDb.Mvc.Controller.ModelController
   controllerAction: Create
 
 "DopeDb-EditModel":
   uriPattern: /edit/{model}/{id}
-  controllerName: Model
+  controllerName: DopeDb.Mvc.Controller.ModelController
   controllerAction: Create
+
+"DopeDb-DeleteModel":
+  uriPattern: /edit/{model}/{id}
+  controllerName: DopeDb.Mvc.Controller.ModelController
+  controllerAction: Create
+  method: DELETE
 
 "DopeDb-ListModels":
   uriPattern: /list/{model}
-  controllerName: Model
+  controllerName: DopeDb.Mvc.Controller.ModelController
   controllerAction: List
 
 "DopeDb-CsvExport":
   uriPattern: /export/{model}.csv
-  controllerName: Csv
+  controllerName: DopeDb.Mvc.Controller.CsvController
   controllerAction: List
