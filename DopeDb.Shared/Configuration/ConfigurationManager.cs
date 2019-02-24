@@ -19,6 +19,8 @@ namespace DopeDb.Shared.Configuration
         Routes,
         Model,
     }
+
+    [Core.ObjectManagement.Singleton]
     public class ConfigurationManager
     {
         protected Dictionary<ConfigurationType, IConfiguration> configurations;

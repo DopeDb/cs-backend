@@ -1,3 +1,4 @@
+using DopeDb.Shared.Core.ObjectManagement;
 using DopeDb.Shared.Cli;
 using DopeDb.Shared.Reflection;
 using DopeDb.Shared.Util;
@@ -44,7 +45,7 @@ namespace DopeDb.Cli
                 Util.WriteLine("Call help:list to see all available commands");
                 return;
             }
-            var commandController = System.Activator.CreateInstance(command.DeclaringType);
+            var commandController = ObjectManager.Instance().Get(command.DeclaringType);
             var arguments = MapArguments(command, cliCall);
             var request = new CliRequest();
             request.ActionName = cliCall.ActionName;

@@ -1,7 +1,10 @@
 using System.Reflection;
+using DopeDb.Shared.Core.ObjectManagement;
 
 namespace DopeDb.Shared.Plugins
 {
+
+    [Singleton]
     public class PluginManager
     {
         protected Plugin[] plugins;
